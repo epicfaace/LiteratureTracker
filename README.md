@@ -1,6 +1,18 @@
 # Literature Tracker
 
-A Single page web application to keep track of books/ articles you have read in the past, review and share them. I have used MEAN stack with MasonryJs for fluid grid layout.
+A Single page web application to keep track of books/ articles you have read in the past, review and share them. I have used MEAN stack with Angular Material for fluid grid layout.
+
+## Walkthrough
+
+* Literature added to library can be a book, an article, a blog, or an academic paper. For simplicity, I have maintained only Book name and Author name for books, and Name and URL for the rest of the literature types.
+* You can Review a book. A review is restricted to 500 characters. (There is a dummy link "FREE SAMPLE", which I plan to use in future updates to the application)
+* You can Share or Explore a literature that has a URL. Clicking on Share would open a basic email template on your default email client. Clicking on Explore would open the link in a new tab.
+
+## Technical Details
+
+* I have used HTML5 form validation for validating user input.
+* I have used Angular Material for fluid grid layout and form elements.
+* The application runs on a NodeJs server with a MongoDB hosting the data. I use Mongoose ODM as an interface to access MongoDB from the server.
 
 ## Instructions to Run
 
