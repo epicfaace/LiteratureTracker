@@ -39,4 +39,12 @@ router.post('/', function (req, res) {
   });
 });
 
+router.put('/:id', function (req, res) {
+  var id = req.params.id;
+  LiteratureModel.findByIdAndUpdate(id, req.body, function (err, result) {
+    if (err) res.status(404).json({ message: 'Cannot find ' + id});
+    else res.status(200).json(result);
+  });
+});
+
 module.exports = router;

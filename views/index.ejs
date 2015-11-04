@@ -6,8 +6,10 @@
     <meta name='viewport' content='width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes'>
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    <!-- Fontawesome -->
+    <!-- Font-awesome -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <!-- Angular Material -->
+    <link rel="stylesheet" href="/angular-material/angular-material.css"/>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -18,9 +20,10 @@
   </head>
   <body ng-controller="MainController as main">
     <nav class="navbar navbar-default navbar-static-top">
-      <div class="container" id="header">
+      <div class="ng-cloak container" id="header">
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar"
+                  aria-expanded="false" aria-controls="navbar">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar" ng-repeat="literature in main.literatures"></span>
           </button>
@@ -33,26 +36,30 @@
         </div><!--/.nav-collapse -->
       </div>
     </nav>
-    <div class="cards-container">
+    <div class="ng-cloak cards-container" ng-init="newItem = true; main.addItem = false">
       <div class="col-lg-2"></div>
       <div class="col-lg-8">
-        <div class="grid">
-          <div class="grid-item medium">
+        <div ng-if="main.addItem" ng-include="'add-literature'"></div>
+        <div ng-if="main.editReview" ng-include="'add-review'"></div>
+        <div class="grid" ng-if="!main.addItem && !main.editReview">
+          <div class="grid-item" ng-show="newItem == true">
             <div class="grid-item-main-panel">
               <h4>Welcome back!</h4>
-                <pre>
-                  It's been a while.
-                  Read any new books lately?
-                </pre>
+              <span class="block">It's been a while.</span>
+              <span class="block">Read any new books lately?</span>
             </div>
             <div class="grid-item-footer">
-              <a href="#">NO</a>
-              <a href="#" class="highlight">YES</a>
+              <div>
+                <a href="#" ng-click="newItem = false">NO</a>
+                <a href="#" class="highlight" ng-click="main.addItem = true">YES</a>
+              </div>
             </div>
           </div>
           <div ng-repeat="literature in main.literatures">
-            <div class="grid-item" ng-if="literature.type == 'book'" ng-class="{'small': literature.type == 'book'}" >{{literature}}</div> <!-- ng-include="'grid-card'" -->
-            <div class="grid-item" ng-if="literature.type != 'book'" ng-class="{'large': literature.type != 'book'}" >{{literature}}</div>
+            <div class="grid-item" ng-if="literature.type == 'book'" ng-class="{'small': literature.type == 'book'}"
+                 ng-include="'grid-card'"></div> <!-- ng-include="'grid-card'" -->
+            <div class="grid-item" ng-if="literature.type != 'book'" ng-class="{'large': literature.type != 'book'}"
+                 ng-include="'grid-card'"></div>
           </div>
         </div>
       </div>
@@ -60,13 +67,99 @@
     </div>
 
     <script type="text/ng-template" id="grid-card">
-      <div ng-if="literature.type == 'book'">
+      <div class="ng-cloak" ng-if="literature.type == 'book'" ng-init="main.editReview = false">
         <div class="grid-item-main-panel">
-
+          <h4>{{literature.name}}</h4>
+          <span class="block">{{literature.author}}</span>
+          <span class="block" ng-if="literature.review">{{literature.review}}</span>
         </div>
         <div class="grid-item-footer">
-          <a href="#">NO</a>
-          <a href="#" class="highlight">YES</a>
+          <div>
+            <a href="#">FREE SAMPLE</a>
+            <a href="#" class="highlight" ng-click="main.editReview = true; main.currItem = literature;">REVIEW</a>
+          </div>
+        </div>
+      </div>
+      <div class="ng-cloak" ng-if="literature.type != 'book'">
+        <div class="grid-item-main-panel">
+
+          <h4>{{literature.name}}</h4>
+          <span class="block">{{literature.type}}</span>
+        </div>
+        <div class="grid-item-footer">
+          <div>
+            <a href="#" ng-click="main.shareArticle(literature)">SHARE</a>
+            <a href="{{literature.url}}" class="highlight">EXPLORE</a>
+          </div>
+        </div>
+      </div>
+    </script>
+
+    <script type="text/ng-template" id="add-review">
+      <div class="ng-cloak md-padding" ng-init="added = false">
+        <div>
+          <h1 class="md-title">Add a Review</h1>
+          <h3>{{main.currItem.name}}</h3>
+          <p ng-if="main.currItem.author">{{main.currItem.author}}</p>
+          <p ng-if="main.currItem.url"><a href="{{main.currItem.url}}">{{main.currItem.url}}</a></p>
+          <h4 ng-if="added">{{main.currItem.review}}</h4>
+          <div layout-sm="column" layout-align="center center" layout-wrap>
+            <md-input-container>
+              <label>Your Review</label>
+              <textarea ng-model="main.currItem.review" columns="1" md-maxlength="500"></textarea>
+            </md-input-container>
+            <div layout="row">
+              <md-button class="md-raised" ng-click="main.addReview(currItem)">Add</md-button>
+              <md-button class="md-raised" ng-click="main.editReview = false">Cancel</md-button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </script>
+
+    <script type="text/ng-template" id="add-literature">
+      <div class="ng-cloak md-padding" ng-init="main.itemToAdd = {}; main.selectedType = null">
+        <!-- HTML5 form with validation to add a recently read item -->
+        <div>
+          <h1 class="md-title">What did you read recently?</h1>
+          <div layout="column">
+            <md-input-container>
+              <label>Pick one</label>
+              <md-select ng-model="main.selectedType">
+                <md-option class="options" ng-repeat="type in main.itemTypes" value="{{type}}">
+                  {{type}}
+                </md-option>
+              </md-select>
+            </md-input-container>
+            <div layout-sm="column">
+              <md-button class="md-raised" ng-if="!main.selectedType" ng-click="main.addItem = false">Cancel</md-button>
+            </div>
+          </div>
+          <div layout-sm="column" layout-align="center center" layout-wrap ng-if="main.selectedType != null">
+            <md-input-container>
+              <label>Name</label>
+              <input required ng-model="main.itemToAdd.name">
+              <div ng-messages="main.itemToAdd.name.$error">
+                <div ng-message="required" ng-show="(main.itemToAdd.url.$touched && main.itemToAdd.name.$error) || main.itemToAdd.name.$error">This is a required field.</div>
+              </div>
+            </md-input-container>
+            <md-input-container ng-if="main.selectedType == 'book'">
+              <label>Author</label>
+              <input required ng-model="main.itemToAdd.author">
+              <div ng-messages="main.itemToAdd.author.$error">
+                <div ng-message="required" ng-show="(main.itemToAdd.author.$touched && main.itemToAdd.author.$error) || main.itemToAdd.author.$error">This is a required field.</div>
+              </div>
+            </md-input-container>
+            <md-input-container ng-if="main.selectedType != 'book'">
+              <label>URL</label>
+              <input type="url" pattern="https?://.+" required ng-model="main.itemToAdd.url">
+              <div ng-messages="main.itemToAdd.url.$error">
+                <div ng-message="required, pattern" ng-show="(main.itemToAdd.url.$touched && main.itemToAdd.url.$error) || main.itemToAdd.url.$error">This is a required field. Enter a valid URL.</div>
+              </div>
+            </md-input-container>
+            <md-button class="md-raised" ng-click="main.addToCollection()">Add</md-button>
+            <md-button class="md-raised" ng-click="main.addItem = false">Cancel</md-button>
+          </div>
         </div>
       </div>
     </script>
@@ -74,8 +167,10 @@
     <script src="/jquery/dist/jquery.js"></script>
     <script src="/bootstrap/dist/js/bootstrap.js"></script>
     <script src="/angular/angular.js"></script>
+    <script src="/angular-animate/angular-animate.js"></script>
+    <script src="/angular-aria/angular-aria.js"></script>
+    <script src="/angular-material/angular-material.js"></script>
     <script src="/masonry/dist/masonry.pkgd.js"></script>
-    <!--<script src="/angular-ui-router/release/angular-ui-router.js"></script>-->
     <script src="/javascripts/controller.js"></script>
     <script src="/javascripts/service.js"></script>
     <script src="/javascripts/routes.js"></script>

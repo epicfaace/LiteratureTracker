@@ -2,31 +2,8 @@
  * Created by Ramya on 10/29/2015.
  */
 angular.module('literaturetrackerapp.services', [])
-    .service('FetchData', function ($http) {
+    .service('LiteratureService', function ($http) {
         var _self = this;
-        _self.literatures = [
-            {
-                "_id": "5632cd8c7f340e744b7b37ac",
-                "type": "book",
-                "name": "El Pooch",
-                "author": "Alex Nelson",
-                "__v": 0
-            },
-            {
-                "_id": "5632cdc87f340e744b7b37ad",
-                "type": "book",
-                "name": "The Flight",
-                "author": "Scott Masterson",
-                "__v": 0
-            },
-            {
-                "_id": "5632cea87f340e744b7b37ae",
-                "type": "article",
-                "name": "Top 10 Australian beaches",
-                "url": "http://www.101bestbeaches.com/",
-                "__v": 0
-            }
-        ];
 
         _self.fetchData = function () {
             console.log('In service');
@@ -36,6 +13,36 @@ angular.module('literaturetrackerapp.services', [])
             }, function (error) {
                 console.log('Error from server');
                 return error;
+            });
+        };
+
+        _self.addItem = function (literature) {
+            console.log('Service.addItem() called.');
+            return $http.post('/', literature).then(function (response) {
+                console.log('Response from server: ', response);
+                return response;
+            }, function (err) {
+                console.log('Error from server');
+                return err;
+            });
+        };
+
+        _self.sendEmail = function (recipient, subject, body) {
+            var url = 'mailto:' + recipient + '?subject=' + subject + '&b' +
+                'ody=' + body;
+            $http.get(url).then(function (res) {
+                return res;
+            }, function (err) {
+                return err;
+            });
+        };
+
+        _self.writeReview = function (literature) {
+            var id = literature._id;
+            $http.put('/:' + id).then (function (res) {
+                return res;
+            }, function (err) {
+                return err;
             });
         }
     });
