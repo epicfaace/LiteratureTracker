@@ -14,4 +14,4 @@ A Single page web application to keep track of books/ articles you have read in 
 
 ## Live Application
 
-The application is live on this URL: <To be updated>
+The application is live on this URL: *To be updated*
