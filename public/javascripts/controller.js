@@ -7,11 +7,13 @@ angular.module('literaturetrackerapp', ['ngAnimate', 'ngMaterial', 'literaturetr
 
         vm.itemTypes = ['book', 'article', 'blog', 'academic paper'];
         vm.itemToAdd = {};
+        vm.selectedType = null;
         vm.currItem = {};
         vm.editReview = false;
 
         vm.addToCollection = function () {
             vm.addItem = false;
+            vm.itemToAdd.type = vm.selectedType;
             LiteratureService.addItem(vm.itemToAdd).then(function (response) {
                 console.log('New Item added: ', vm.itemToAdd);
                 console.log('Response from service: ', response);
