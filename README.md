@@ -26,7 +26,7 @@ A Single page web application to keep track of books/ articles you have read in 
 
 ## Future Enhancements
 
-* Fetch data from public repositories like Google books or Good reads to fetch data regarding books and provide a list of books to choose from. This can also help get an image for the book cover.
+* Fetch data from public repositories like Google books or Goodreads to fetch data regarding books and provide a list of books to choose from. This can also help get an image for the book cover.
 * Provide image upload when an image is not available already.
 * Provide safe file upload and enable sharing of free samples of books/ literature that interests the user.
 * Expand the database to store Author information to easily fetch books related to user's interest.
